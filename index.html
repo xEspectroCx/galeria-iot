@@ -64,18 +64,19 @@ async function cargarImagenes(){
 
             headers:{
                 "Content-Type":"application/json",
-                "apikey":API_KEY
+                "apikey":API_KEY,
+                "Authorization": `Bearer ${API_KEY}`
             },
 
             body:JSON.stringify({
-                limit:100
+                prefix:"",
+                limit:100,
+                offset:0
             })
         }
     );
 
     const archivos = await response.json();
-    
-    console.log("RESPUESTA:", archivos);
 
     console.log(archivos);
 
