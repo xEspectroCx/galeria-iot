@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Galería Jetson</title>
+
+<style>
+body{
+    background:#111;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+}
+
+#galeria{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:15px;
+    padding:20px;
+}
+
+img{
+    width:250px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+img:hover{
+    transform:scale(1.03);
+}
+</style>
+</head>
+
+<body>
+
+<h1>Galería IoT Jetson</h1>
+
+<div id="galeria"></div>
+
+<script>
+
+const SUPABASE_URL =
+"https://vpvrqtcnbluffwlrmprs.supabase.co";
+
+const API_KEY =
+"sb_publishable_VEE3Grv0HVTDWXJSupfHmQ_iyPZsG8J";
+
+const BUCKET = "Imagenes";
+
+async function cargarImagenes(){
+
+    const response = await fetch(
+        `${SUPABASE_URL}/storage/v1/object/list/${BUCKET}`,
+        {
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json",
+                "apikey":API_KEY
+            },
+
+            body:JSON.stringify({
+                limit:100
+            })
+        }
+    );
+
+    const archivos = await response.json();
+
+    const galeria =
+    document.getElementById("galeria");
+
+    archivos.forEach(archivo => {
+
+        const url =
+        `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${archivo.name}`;
+
+        const img =
+        document.createElement("img");
+
+        img.src = url;
+
+        img.onclick = () => {
+            window.open(url, "_blank");
+        };
+
+        galeria.appendChild(img);
+
+    });
+}
+
+cargarImagenes();
+
+</script>
+
+</body>
+</html>
