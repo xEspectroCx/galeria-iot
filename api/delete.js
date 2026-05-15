@@ -8,34 +8,53 @@ const supabase = createClient(
 export default async function handler(req, res) {
 
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
   }
 
   try {
-    const { filename } = JSON.parse(req.body);
 
-    // 1. borrar de Storage
-    const { error: storageError } = await supabase.storage
+    // 🚀 SIN JSON.parse
+    const { filename } = req.body;
+
+    console.log("Borrando:", filename);
+
+    // STORAGE
+
+    const { error: storageError } =
+    await supabase.storage
       .from("Imagenes")
       .remove([filename]);
 
-    // 2. borrar de la tabla
-    const { error: dbError } = await supabase
+    // DB
+
+    const { error: dbError } =
+    await supabase
       .from("Imagenes")
       .delete()
       .eq("filename", filename);
 
     if (storageError || dbError) {
+
+      console.log(storageError);
+      console.log(dbError);
+
       return res.status(400).json({
-        ok: false,
+        ok:false,
         storageError,
         dbError
       });
     }
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({
+      ok:true
+    });
 
   } catch (err) {
+
+    console.log(err);
+
     return res.status(500).json({
       error: err.message
     });
