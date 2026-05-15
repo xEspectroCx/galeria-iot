@@ -7,11 +7,13 @@
 <title>IoT Jetson Dashboard</title>
 
 <style>
+
 body{
     background:#111;
     color:white;
     font-family:Arial;
     text-align:center;
+    margin:0;
 }
 
 h1{
@@ -25,21 +27,28 @@ h1{
 input{
     padding:10px;
     margin:5px;
-    width:200px;
+    width:220px;
+    border:none;
+    border-radius:5px;
 }
 
 button{
     padding:10px 15px;
     margin:5px;
     cursor:pointer;
+    border:none;
+    border-radius:5px;
 }
 
 #logoutBtn{
     margin-top:10px;
     background:#ff4444;
     color:white;
-    border:none;
-    border-radius:5px;
+}
+
+#guestBtn{
+    background:#2d7cff;
+    color:white;
 }
 
 #galeria{
@@ -76,6 +85,13 @@ a{
 .hidden{
     display:none;
 }
+
+.deleteBtn{
+    margin-top:10px;
+    background:#ff4444;
+    color:white;
+}
+
 </style>
 </head>
 
@@ -84,18 +100,42 @@ a{
 <h1>IoT Jetson Dashboard</h1>
 
 <!-- LOGOUT -->
-<button id="logoutBtn" onclick="logout()" style="display:none;">
+<button
+    id="logoutBtn"
+    onclick="logout()"
+    style="display:none;"
+>
     Cerrar sesión
 </button>
 
 <!-- LOGIN -->
 <div id="loginBox">
+
     <h3>Login Admin</h3>
+
     <input id="email" placeholder="email">
+
     <br>
-    <input id="password" type="password" placeholder="password">
+
+    <input
+        id="password"
+        type="password"
+        placeholder="password"
+    >
+
     <br>
-    <button onclick="login()">Entrar</button>
+
+    <button onclick="login()">
+        Entrar Admin
+    </button>
+
+    <button
+        id="guestBtn"
+        onclick="guestMode()"
+    >
+        Entrar como invitado
+    </button>
+
 </div>
 
 <!-- GALERIA -->
@@ -103,116 +143,198 @@ a{
 
 <script type="module">
 
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient }
+from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://vpvrqtcnbluffwlrmprs.supabase.co";
-const SUPABASE_KEY = "sb_publishable_VEE3Grv0HVTDWXJSupfHmQ_iyPZsG8J";
+const SUPABASE_URL =
+"https://vpvrqtcnbluffwlrmprs.supabase.co";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwdnJxdGNuYmx1ZmZ3bHJtcHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDkwNzksImV4cCI6MjA5NDQyNTA3OX0.7rUHZRbFT3OCPoVdBO5PWeIKH9CYJ8jzQVto5CZ7odE";
+
+const supabase =
+createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let user = null;
+
 const ADMIN_EMAIL = "admin@iot.com";
 
-// ---------------- UI ----------------
+// ================= UI =================
 
 function mostrarLogin(){
-    document.getElementById("loginBox").style.display = "block";
-    document.getElementById("galeria").classList.add("hidden");
-    document.getElementById("logoutBtn").style.display = "none";
+
+    document.getElementById("loginBox")
+    .style.display = "block";
+
+    document.getElementById("galeria")
+    .classList.add("hidden");
+
+    document.getElementById("logoutBtn")
+    .style.display = "none";
 }
 
 function mostrarApp(){
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("galeria").classList.remove("hidden");
-    document.getElementById("logoutBtn").style.display = "inline-block";
+
+    document.getElementById("loginBox")
+    .style.display = "none";
+
+    document.getElementById("galeria")
+    .classList.remove("hidden");
+
+    document.getElementById("logoutBtn")
+    .style.display = "inline-block";
 }
 
-// ---------------- INIT ----------------
+// ================= INIT =================
 
 window.onload = async () => {
-    const { data } = await supabase.auth.getUser();
 
-    if (data.user) {
+    const { data } =
+    await supabase.auth.getUser();
+
+    if(data.user){
+
         user = data.user;
+
         mostrarApp();
+
         cargarImagenes();
-    } else {
+
+    }else{
+
         mostrarLogin();
     }
 };
 
-// ---------------- LOGIN ----------------
+// ================= LOGIN =================
 
 window.login = async function(){
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email =
+    document.getElementById("email").value;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const password =
+    document.getElementById("password").value;
+
+    const { data, error } =
+    await supabase.auth.signInWithPassword({
+
         email,
         password
+
     });
 
     if(error){
+
         alert("Error login");
+
+        console.error(error);
+
         return;
     }
 
     user = data.user;
 
     mostrarApp();
+
     cargarImagenes();
 };
 
-// ---------------- LOGOUT ----------------
+// ================= GUEST MODE =================
+
+window.guestMode = function(){
+
+    user = {
+        email: "guest"
+    };
+
+    mostrarApp();
+
+    cargarImagenes();
+};
+
+// ================= LOGOUT =================
 
 window.logout = async function(){
+
     await supabase.auth.signOut();
+
     location.reload();
 };
 
-// ---------------- GALERIA ----------------
+// ================= GALERIA =================
 
 async function cargarImagenes(){
 
-    const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/Imagenes?select=*`,
-        {
-            headers:{
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            }
-        }
-    );
+    const { data, error } =
+    await supabase
+        .from("Imagenes")
+        .select("*")
+        .order("fecha", { ascending:false });
 
-    const data = await res.json();
+    if(error){
 
-    if (!Array.isArray(data)) {
-        console.error("Error Supabase:", data);
+        console.error("ERROR SUPABASE:", error);
+
+        alert(
+            "Error cargando imágenes. Mira F12 consola."
+        );
+
         return;
     }
 
-    const galeria = document.getElementById("galeria");
+    console.log("IMAGENES:", data);
+
+    const galeria =
+    document.getElementById("galeria");
+
     galeria.innerHTML = "";
+
+    if(data.length === 0){
+
+        galeria.innerHTML =
+        "<p>No hay imágenes</p>";
+
+        return;
+    }
 
     data.forEach(item => {
 
-        const card = document.createElement("div");
+        const card =
+        document.createElement("div");
+
         card.className = "card";
 
-        const img = document.createElement("img");
+        const img =
+        document.createElement("img");
+
         img.src = item.url;
-        img.onclick = () => window.open(item.url, "_blank");
 
-        const fecha = document.createElement("p");
-        fecha.innerText = "📅 " + item.fecha;
+        img.onclick = () => {
 
-        const gps = document.createElement("p");
-        gps.innerText = `📍 ${item.lat}, ${item.lon}`;
+            window.open(item.url, "_blank");
+        };
 
-        const mapa = document.createElement("a");
-        mapa.href = `https://www.google.com/maps?q=${item.lat},${item.lon}`;
+        const fecha =
+        document.createElement("p");
+
+        fecha.innerText =
+        "📅 " + item.fecha;
+
+        const gps =
+        document.createElement("p");
+
+        gps.innerText =
+        `📍 ${item.lat}, ${item.lon}`;
+
+        const mapa =
+        document.createElement("a");
+
+        mapa.href =
+        `https://www.google.com/maps?q=${item.lat},${item.lon}`;
+
         mapa.target = "_blank";
+
         mapa.innerText = "Ver mapa";
 
         card.appendChild(img);
@@ -220,25 +342,54 @@ async function cargarImagenes(){
         card.appendChild(gps);
         card.appendChild(mapa);
 
-        // SOLO ADMIN
+        // ========= SOLO ADMIN =========
+
         if(user?.email === ADMIN_EMAIL){
 
-            const btn = document.createElement("button");
+            const btn =
+            document.createElement("button");
+
+            btn.className = "deleteBtn";
+
             btn.innerText = "Eliminar";
 
             btn.onclick = async () => {
 
-                await fetch("/api/delete", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        filename: item.filename
-                    })
-                });
+                const confirmar =
+                confirm("¿Eliminar imagen?");
 
-                cargarImagenes();
+                if(!confirmar) return;
+
+                try{
+
+                    const response =
+                    await fetch("/api/delete", {
+
+                        method:"POST",
+
+                        headers:{
+                            "Content-Type":
+                            "application/json"
+                        },
+
+                        body:JSON.stringify({
+                            filename:item.filename
+                        })
+                    });
+
+                    const result =
+                    await response.json();
+
+                    console.log(result);
+
+                    cargarImagenes();
+
+                }catch(err){
+
+                    console.error(err);
+
+                    alert("Error eliminando");
+                }
             };
 
             card.appendChild(btn);
