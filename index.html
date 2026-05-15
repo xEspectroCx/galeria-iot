@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Galería Jetson</title>
+<title>Galería IoT Jetson</title>
 
 <style>
 body{
@@ -26,8 +26,15 @@ h1{
     padding:20px;
 }
 
+.card{
+    background:#1c1c1c;
+    padding:10px;
+    border-radius:10px;
+    width:260px;
+}
+
 img{
-    width:250px;
+    width:100%;
     border-radius:10px;
     cursor:pointer;
     transition:0.2s;
@@ -35,6 +42,16 @@ img{
 
 img:hover{
     transform:scale(1.03);
+}
+
+p{
+    margin:5px 0;
+    font-size:14px;
+}
+
+a{
+    color:#4da3ff;
+    text-decoration:none;
 }
 </style>
 </head>
@@ -53,54 +70,53 @@ const SUPABASE_URL =
 const API_KEY =
 "sb_publishable_VEE3Grv0HVTDWXJSupfHmQ_iyPZsG8J";
 
-const BUCKET = "Imagenes";
-
 async function cargarImagenes(){
 
     const response = await fetch(
-        `${SUPABASE_URL}/storage/v1/object/list/${BUCKET}`,
+        `${SUPABASE_URL}/rest/v1/imagenes?select=*`,
         {
-            method:"POST",
-
+            method: "GET",
             headers:{
-                "Content-Type":"application/json",
-                "apikey":API_KEY,
+                "apikey": API_KEY,
                 "Authorization": `Bearer ${API_KEY}`
-            },
-
-            body:JSON.stringify({
-                prefix:"",
-                limit:100,
-                offset:0
-            })
+            }
         }
     );
 
-    const archivos = await response.json();
+    const data = await response.json();
 
-    console.log(archivos);
-
-    const galeria =
-    document.getElementById("galeria");
-
+    const galeria = document.getElementById("galeria");
     galeria.innerHTML = "";
 
-    archivos.forEach(archivo => {
+    data.forEach(item => {
 
-        const url =
-        `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${archivo.name}`;
+        const card = document.createElement("div");
+        card.className = "card";
 
-        const img =
-        document.createElement("img");
-
-        img.src = url;
+        const img = document.createElement("img");
+        img.src = item.url;
 
         img.onclick = () => {
-            window.open(url, "_blank");
+            window.open(item.url, "_blank");
         };
 
-        galeria.appendChild(img);
+        const fecha = document.createElement("p");
+        fecha.innerText = "📅 " + (item.fecha || "sin fecha");
 
+        const gps = document.createElement("p");
+        gps.innerText = `📍 ${item.lat ?? 0}, ${item.lon ?? 0}`;
+
+        const mapa = document.createElement("a");
+        mapa.href = `https://www.google.com/maps?q=${item.lat},${item.lon}`;
+        mapa.target = "_blank";
+        mapa.innerText = "Ver en mapa";
+
+        card.appendChild(img);
+        card.appendChild(fecha);
+        card.appendChild(gps);
+        card.appendChild(mapa);
+
+        galeria.appendChild(card);
     });
 }
 
