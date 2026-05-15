@@ -34,6 +34,14 @@ button{
     cursor:pointer;
 }
 
+#logoutBtn{
+    margin-top:10px;
+    background:#ff4444;
+    color:white;
+    border:none;
+    border-radius:5px;
+}
+
 #galeria{
     display:flex;
     flex-wrap:wrap;
@@ -75,6 +83,11 @@ a{
 
 <h1>IoT Jetson Dashboard</h1>
 
+<!-- LOGOUT -->
+<button id="logoutBtn" onclick="logout()" style="display:none;">
+    Cerrar sesión
+</button>
+
 <!-- LOGIN -->
 <div id="loginBox">
     <h3>Login Admin</h3>
@@ -105,11 +118,13 @@ const ADMIN_EMAIL = "admin@iot.com";
 function mostrarLogin(){
     document.getElementById("loginBox").style.display = "block";
     document.getElementById("galeria").classList.add("hidden");
+    document.getElementById("logoutBtn").style.display = "none";
 }
 
 function mostrarApp(){
     document.getElementById("loginBox").style.display = "none";
     document.getElementById("galeria").classList.remove("hidden");
+    document.getElementById("logoutBtn").style.display = "inline-block";
 }
 
 // ---------------- INIT ----------------
@@ -149,6 +164,13 @@ window.login = async function(){
     cargarImagenes();
 };
 
+// ---------------- LOGOUT ----------------
+
+window.logout = async function(){
+    await supabase.auth.signOut();
+    location.reload();
+};
+
 // ---------------- GALERIA ----------------
 
 async function cargarImagenes(){
@@ -164,6 +186,11 @@ async function cargarImagenes(){
     );
 
     const data = await res.json();
+
+    if (!Array.isArray(data)) {
+        console.error("Error Supabase:", data);
+        return;
+    }
 
     const galeria = document.getElementById("galeria");
     galeria.innerHTML = "";
@@ -203,6 +230,9 @@ async function cargarImagenes(){
 
                 await fetch("/api/delete", {
                     method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
                         filename: item.filename
                     })
