@@ -73,10 +73,12 @@ async function cargarImagenes(){
         }
     );
 
-    const archivos = await response.json();
-
     const galeria =
     document.getElementById("galeria");
+    
+    const archivos = [
+        { name: "foto.jpg" }
+    ];
 
     archivos.forEach(archivo => {
 
