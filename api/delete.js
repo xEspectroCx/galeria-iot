@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
     // 2. borrar de la tabla
     const { error: dbError } = await supabase
-      .from("imagenes")
+      .from("Imagenes")
       .delete()
       .eq("filename", filename);
 
