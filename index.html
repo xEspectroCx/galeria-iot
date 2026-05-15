@@ -92,16 +92,39 @@ a{
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL =
-"https://vpvrqtcnbluffwlrmprs.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_VEE3Grv0HVTDWXJSupfHmQ_iyPZsG8J";
+const SUPABASE_URL = "https://vpvrqtcnbluffwlrmprs.supabase.co";
+const SUPABASE_KEY = "sb_publishable_VEE3Grv0HVTDWXJSupfHmQ_iyPZsG8J";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let user = null;
 const ADMIN_EMAIL = "admin@iot.com";
+
+// ---------------- UI ----------------
+
+function mostrarLogin(){
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("galeria").classList.add("hidden");
+}
+
+function mostrarApp(){
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("galeria").classList.remove("hidden");
+}
+
+// ---------------- INIT ----------------
+
+window.onload = async () => {
+    const { data } = await supabase.auth.getUser();
+
+    if (data.user) {
+        user = data.user;
+        mostrarApp();
+        cargarImagenes();
+    } else {
+        mostrarLogin();
+    }
+};
 
 // ---------------- LOGIN ----------------
 
@@ -122,29 +145,9 @@ window.login = async function(){
 
     user = data.user;
 
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("galeria").classList.remove("hidden");
-
+    mostrarApp();
     cargarImagenes();
 };
-
-// ---------------- CHECK SESSION ----------------
-
-async function checkSession(){
-
-    const { data } = await supabase.auth.getUser();
-
-    if(data.user){
-        user = data.user;
-
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("galeria").classList.remove("hidden");
-
-        cargarImagenes();
-    }
-}
-
-checkSession();
 
 // ---------------- GALERIA ----------------
 
@@ -190,7 +193,7 @@ async function cargarImagenes(){
         card.appendChild(gps);
         card.appendChild(mapa);
 
-        // BOTÓN BORRAR SOLO ADMIN
+        // SOLO ADMIN
         if(user?.email === ADMIN_EMAIL){
 
             const btn = document.createElement("button");
