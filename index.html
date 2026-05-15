@@ -154,7 +154,7 @@ window.login = async function(){
 async function cargarImagenes(){
 
     const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/imagenes?select=*`,
+        `${SUPABASE_URL}/rest/v1/Imagenes?select=*`,
         {
             headers:{
                 "apikey": SUPABASE_KEY,
