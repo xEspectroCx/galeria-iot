@@ -16,9 +16,38 @@ body{
     margin:0;
 }
 
-h1{
+/* ================= HEADER ================= */
+
+#header{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:40px;
     margin-top:20px;
+    flex-wrap:wrap;
 }
+
+.logo{
+    width:120px;
+}
+
+.mapaHeader{
+    width:140px;
+    border-radius:15px;
+}
+
+#titulo h1{
+    margin:0;
+    font-size:32px;
+}
+
+#titulo p{
+    margin-top:10px;
+    color:#bbb;
+    font-size:15px;
+}
+
+/* ================= LOGIN ================= */
 
 #loginBox{
     margin-top:50px;
@@ -40,8 +69,14 @@ button{
     border-radius:5px;
 }
 
+/* ================= BOTONES ================= */
+
+#logoutContainer{
+    margin-top:20px;
+    margin-bottom:30px;
+}
+
 #logoutBtn{
-    margin-top:10px;
     background:#ff4444;
     color:white;
 }
@@ -50,6 +85,8 @@ button{
     background:#2d7cff;
     color:white;
 }
+
+/* ================= GALERIA ================= */
 
 #galeria{
     display:flex;
@@ -66,7 +103,7 @@ button{
     width:260px;
 }
 
-img{
+.card img{
     width:100%;
     border-radius:10px;
     cursor:pointer;
@@ -97,18 +134,33 @@ a{
 
 <body>
 
-<h1>IoT Jetson Dashboard</h1>
+<!-- ================= HEADER ================= -->
 
-<!-- LOGOUT -->
-<button
-    id="logoutBtn"
-    onclick="logout()"
-    style="display:none;"
->
-    Cerrar sesión
-</button>
+<div id="header">
 
-<!-- LOGIN -->
+    <img
+    class="logo"
+    src="logo.png">
+
+    <div id="titulo">
+
+        <h1>IoT Jetson Dashboard</h1>
+
+        <p>
+        Sistema portátil de adquisición y
+        transmisión adaptativa de datos
+        </p>
+
+    </div>
+
+    <img
+    class="mapaHeader"
+    src="mapa.png">
+
+</div>
+
+<!-- ================= LOGIN ================= -->
+
 <div id="loginBox">
 
     <h3>Login Admin</h3>
@@ -138,8 +190,23 @@ a{
 
 </div>
 
-<!-- GALERIA -->
+<!-- ================= GALERIA ================= -->
+
 <div id="galeria" class="hidden"></div>
+
+<!-- ================= LOGOUT ABAJO ================= -->
+
+<div id="logoutContainer">
+
+    <button
+        id="logoutBtn"
+        onclick="logout()"
+        style="display:none;"
+    >
+        Cerrar sesión
+    </button>
+
+</div>
 
 <script type="module">
 
@@ -240,7 +307,7 @@ window.login = async function(){
     cargarImagenes();
 };
 
-// ================= GUEST MODE =================
+// ================= GUEST =================
 
 window.guestMode = function(){
 
@@ -274,16 +341,10 @@ async function cargarImagenes(){
 
     if(error){
 
-        console.error("ERROR SUPABASE:", error);
-
-        alert(
-            "Error cargando imágenes. Mira F12 consola."
-        );
+        console.error(error);
 
         return;
     }
-
-    console.log("IMAGENES:", data);
 
     const galeria =
     document.getElementById("galeria");
@@ -311,15 +372,19 @@ async function cargarImagenes(){
         img.src = item.url;
 
         img.onclick = () => {
-
             window.open(item.url, "_blank");
         };
 
         const fecha =
         document.createElement("p");
 
+        const fechaFormateada =
+        item.fecha
+            .replace("T", " ")
+            .split(".")[0];
+
         fecha.innerText =
-        "📅 " + item.fecha;
+        "📅 " + fechaFormateada;
 
         const gps =
         document.createElement("p");
@@ -342,7 +407,7 @@ async function cargarImagenes(){
         card.appendChild(gps);
         card.appendChild(mapa);
 
-        // ========= SOLO ADMIN =========
+        // ===== ADMIN =====
 
         if(user?.email === ADMIN_EMAIL){
 
@@ -362,7 +427,6 @@ async function cargarImagenes(){
 
                 try{
 
-                    const response =
                     await fetch("/api/delete", {
 
                         method:"POST",
@@ -376,11 +440,6 @@ async function cargarImagenes(){
                             filename:item.filename
                         })
                     });
-
-                    const result =
-                    await response.json();
-
-                    console.log(result);
 
                     cargarImagenes();
 
