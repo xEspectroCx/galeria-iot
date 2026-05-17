@@ -86,6 +86,35 @@ button{
     color:white;
 }
 
+/* ================= CONTENIDO ================= */
+
+#contenidoApp{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    gap:20px;
+    padding:20px;
+    flex-wrap:wrap;
+}
+
+.panelInfo{
+    width:260px;
+    background:#1c1c1c;
+    padding:20px;
+    border-radius:15px;
+    text-align:left;
+}
+
+.panelInfo h2{
+    margin-top:0;
+    color:#4da3ff;
+}
+
+.panelInfo p{
+    color:#ddd;
+    line-height:1.5;
+}
+
 /* ================= GALERIA ================= */
 
 #galeria{
@@ -93,7 +122,7 @@ button{
     flex-wrap:wrap;
     justify-content:center;
     gap:15px;
-    padding:20px;
+    max-width:900px;
 }
 
 .card{
@@ -120,7 +149,7 @@ a{
 }
 
 .hidden{
-    display:none;
+    display:none !important;
 }
 
 .deleteBtn{
@@ -190,11 +219,81 @@ a{
 
 </div>
 
-<!-- ================= GALERIA ================= -->
+<!-- ================= CONTENIDO APP ================= -->
 
-<div id="galeria" class="hidden"></div>
+<div id="contenidoApp" class="hidden">
 
-<!-- ================= LOGOUT ABAJO ================= -->
+    <!-- DESCRIPCION -->
+
+    <div class="panelInfo">
+
+        <h2>Descripción del prototipo</h2>
+
+        <p>
+        Sistema IoT portátil basado en
+        NVIDIA Jetson Nano para adquisición
+        georreferenciada de imágenes en zonas
+        con conectividad limitada.
+        </p>
+
+        <p>
+        El dispositivo captura fotografías,
+        obtiene coordenadas GPS y sincroniza
+        automáticamente la información con
+        la nube cuando detecta conexión.
+        </p>
+
+        <p>
+        Puede utilizarse en monitoreo ambiental,
+        inspección de infraestructura,
+        supervisión de vías y adquisición
+        de datos en campo.
+        </p>
+
+    </div>
+
+    <!-- GALERIA -->
+
+    <div id="galeria"></div>
+
+    <!-- INSTRUCCIONES -->
+
+    <div class="panelInfo">
+
+        <h2>Instrucciones de uso</h2>
+
+        <p>
+        1. Encienda el dispositivo.
+        </p>
+
+        <p>
+        2. Espere señal GPS.
+        </p>
+
+        <p>
+        3. Presione el botón de captura.
+        </p>
+
+        <p>
+        4. La imagen y ubicación se almacenan
+        automáticamente.
+        </p>
+
+        <p>
+        5. Si hay internet, el sistema
+        sincroniza los datos automáticamente.
+        </p>
+
+        <p>
+        6. Use el botón de galería para
+        visualizar las imágenes.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ================= LOGOUT ================= -->
 
 <div id="logoutContainer">
 
@@ -233,7 +332,7 @@ function mostrarLogin(){
     document.getElementById("loginBox")
     .style.display = "block";
 
-    document.getElementById("galeria")
+    document.getElementById("contenidoApp")
     .classList.add("hidden");
 
     document.getElementById("logoutBtn")
@@ -245,7 +344,7 @@ function mostrarApp(){
     document.getElementById("loginBox")
     .style.display = "none";
 
-    document.getElementById("galeria")
+    document.getElementById("contenidoApp")
     .classList.remove("hidden");
 
     document.getElementById("logoutBtn")
