@@ -159,8 +159,10 @@ a{
     text-decoration:none;
 }
 
+/* ===== HIDDEN ===== */
+
 .hidden{
-    display:none;
+    display:none !important;
 }
 
 </style>
@@ -412,7 +414,12 @@ window.logout = async function(){
 
     await supabase.auth.signOut();
 
-    location.reload();
+    user = null;
+
+    mostrarLogin();
+
+    document.getElementById("galeria")
+    .innerHTML = "";
 };
 
 /* ========= GALERIA ========= */
