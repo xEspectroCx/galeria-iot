@@ -4,560 +4,343 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>IoT Jetson Dashboard</title>
+<title>DermatoAI | Dashboard Médico</title>
 
 <style>
-
-body{
-    background:#0b0b0b;
-    color:white;
-    font-family:Arial;
-    text-align:center;
-    margin:0;
+/* Diseño Clínico */
+body {
+    background: #f4f7f6;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    text-align: center;
+    margin: 0;
 }
 
-/* ===== HEADER ===== */
-
-#topbar{
-    width:100%;
-    background:#111;
-    padding:15px 0;
-    box-shadow:0 2px 10px rgba(0,0,0,0.5);
+/* HEADER */
+#topbar {
+    width: 100%;
+    background: #ffffff;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-bottom: 3px solid #007bff;
 }
 
-#headerContainer{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:40px;
-    flex-wrap:wrap;
+#headerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
 }
 
-.headerImg{
-    height:90px;
-    object-fit:contain;
+.headerImg {
+    height: 80px;
+    object-fit: contain;
 }
 
-#tituloPrincipal{
-    margin:0;
-    font-size:38px;
+#tituloPrincipal {
+    margin: 0;
+    font-size: 32px;
+    color: #007bff;
 }
 
-/* ===== LOGIN ===== */
-
-#loginBox{
-    margin-top:50px;
+/* LOGIN */
+#loginBox {
+    margin-top: 50px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-input{
-    padding:12px;
-    margin:5px;
-    width:230px;
-    border:none;
-    border-radius:8px;
-    font-size:15px;
+input {
+    padding: 12px;
+    margin: 8px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
 }
 
-button{
-    padding:10px 15px;
-    margin:5px;
-    cursor:pointer;
-    border:none;
-    border-radius:8px;
-    font-size:15px;
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.3s;
 }
 
-/* ===== BOTONES ===== */
-
-#logoutBtn{
-    background:#ff4444;
-    color:white;
-    margin:30px 0;
+/* BOTONES */
+#logoutBtn {
+    background: #dc3545;
+    color: white;
+    margin: 30px 0;
 }
 
-#guestBtn{
-    background:#2d7cff;
-    color:white;
+#guestBtn {
+    background: #6c757d;
+    color: white;
 }
 
-.deleteBtn{
-    margin-top:10px;
-    background:#ff4444;
-    color:white;
+.deleteBtn {
+    margin-top: 10px;
+    background: #dc3545;
+    color: white;
+    width: 100%;
 }
 
-/* ===== CONTENIDO ===== */
-
-#contenidoApp{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:25px;
-    padding:20px;
+/* CONTENIDO */
+#contenidoApp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    padding: 20px;
 }
 
-/* ===== INFO SUPERIOR ===== */
-
-#infoContainer{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-    width:100%;
+/* INFO SUPERIOR */
+#infoContainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
-.panelInfo{
-    width:420px;
-    max-width:90%;
-    background:#1b1b1b;
-    padding:20px;
-    border-radius:15px;
-    text-align:left;
-    box-shadow:0 0 15px rgba(0,0,0,0.4);
+.panelInfo {
+    width: 420px;
+    max-width: 90%;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border-left: 5px solid #007bff;
 }
 
-.panelInfo h2{
-    color:#4da3ff;
-    margin-top:0;
+.panelInfo h2 {
+    color: #007bff;
+    margin-top: 0;
 }
 
-/* ===== GALERIA ===== */
-
-#galeria{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:18px;
-    max-width:1400px;
+/* GALERIA */
+#galeria {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1400px;
 }
 
-.card{
-    background:#181818;
-    padding:12px;
-    border-radius:15px;
-    width:280px;
-    box-shadow:0 0 12px rgba(0,0,0,0.4);
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    width: 280px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
 }
 
-.card img{
-    width:100%;
-    height:220px;
-    object-fit:cover;
-    border-radius:12px;
-    cursor:pointer;
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-p{
-    margin:8px 0;
-    font-size:15px;
-}
-
-a{
-    color:#4da3ff;
-    text-decoration:none;
-}
-
-/* ===== HIDDEN ===== */
-
-.hidden{
-    display:none !important;
-}
+p { margin: 8px 0; font-size: 14px; }
+a { color: #007bff; text-decoration: none; font-weight: bold; }
+.hidden { display: none !important; }
 
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <div id="topbar">
-
     <div id="headerContainer">
-
-        <img
-            src="logo.png"
-            class="headerImg"
-        >
-
-        <h1 id="tituloPrincipal">
-            IoT Jetson Dashboard
-        </h1>
-
-        <img
-            src="mapa.png"
-            class="headerImg"
-        >
-
+        <img src="logo.png" class="headerImg">
+        <h1 id="tituloPrincipal">DermatoAI Dashboard</h1>
+        <img src="mapa.png" class="headerImg">
     </div>
-
 </div>
 
-<!-- LOGIN -->
 <div id="loginBox">
-
-    <h3>Login Admin</h3>
-
-    <input
-        id="email"
-        placeholder="email"
-    >
-
+    <h3>Acceso Profesional</h3>
+    <input id="email" placeholder="Email">
     <br>
-
-    <input
-        id="password"
-        type="password"
-        placeholder="password"
-    >
-
+    <input id="password" type="password" placeholder="Contraseña">
     <br>
-
-    <button onclick="login()">
-        Entrar Admin
-    </button>
-
-    <button
-        id="guestBtn"
-        onclick="guestMode()"
-    >
-        Entrar como invitado
-    </button>
-
+    <button onclick="login()" style="background:#007bff; color:white;">Entrar Admin</button>
+    <button id="guestBtn" onclick="guestMode()">Entrar como invitado</button>
 </div>
 
-<!-- CONTENIDO -->
 <div id="contenidoApp" class="hidden">
 
-    <!-- PANELES -->
     <div id="infoContainer">
-
-        <!-- DESCRIPCIÓN -->
         <div class="panelInfo">
-
-            <h2>Descripción del prototipo</h2>
-
-            <p>
-            Sistema IoT portátil basado en NVIDIA
-            Jetson Nano para adquisición
-            georreferenciada de imágenes
-            en zonas con conectividad limitada.
-            </p>
-
-            <p>
-            El dispositivo captura fotografías,
-            obtiene coordenadas GPS y sincroniza
-            automáticamente la información
-            con la nube cuando detecta conexión.
-            </p>
-
-            <p>
-            Puede utilizarse en monitoreo ambiental,
-            inspección de infraestructura,
-            supervisión de vías y adquisición
-            de datos en campo.
-            </p>
-
+            <h2>Descripción del Prototipo</h2>
+            <p>Sistema IoT médico portátil basado en NVIDIA Jetson Nano, equipado con un <b>dermatoscopio digital</b> para la adquisición de imágenes de alta precisión en campo.</p>
+            <p>La IA local realiza un pre-diagnóstico automático de lesiones cutáneas, georreferenciando los datos mediante GPS.</p>
         </div>
-
-        <!-- INSTRUCCIONES -->
         <div class="panelInfo">
-
-            <h2>Instrucciones de uso</h2>
-
-            <p>1. Encienda el dispositivo.</p>
-
-            <p>2. Espere señal GPS.</p>
-
-            <p>3. Presione el botón de captura.</p>
-
-            <p>
-            4. La imagen y ubicación
-            se almacenan automáticamente.
-            </p>
-
-            <p>
-            5. Si hay internet,
-            el sistema sincroniza
-            automáticamente las imágenes.
-            </p>
-
-            <p>
-            6. Use la galería para visualizar
-            las fotografías almacenadas.
-            </p>
-
+            <h2>Instrucciones de Uso</h2>
+            <p>1. Conecte el dermatoscopio digital al sistema.</p>
+            <p>2. Enfoque la lesión cutánea a evaluar.</p>
+            <p>3. Presione el botón de captura; el sistema guardará el registro.</p>
+            <p>4. La IA procesará la imagen y el sistema sincronizará los resultados a la nube cuando haya conexión disponible.</p>
         </div>
-
     </div>
 
-    <!-- GALERIA -->
     <div id="galeria"></div>
 
-    <!-- LOGOUT -->
-    <button
-        id="logoutBtn"
-        onclick="logout()"
-    >
-        Cerrar sesión
-    </button>
-
+    <button id="logoutBtn" onclick="logout()">Cerrar sesión</button>
 </div>
 
 <script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-import { createClient }
-from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+const SUPABASE_URL = "https://vpvrqtcnbluffwlrmprs.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwdnJxdGNuYmx1ZmZ3bHJtcHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDkwNzksImV4cCI6MjA5NDQyNTA3OX0.7rUHZRbFT3OCPoVdBO5PWeIKH9CYJ8jzQVto5CZ7odE";
 
-const SUPABASE_URL =
-"https://vpvrqtcnbluffwlrmprs.supabase.co";
-
-const SUPABASE_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwdnJxdGNuYmx1ZmZ3bHJtcHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDkwNzksImV4cCI6MjA5NDQyNTA3OX0.7rUHZRbFT3OCPoVdBO5PWeIKH9CYJ8jzQVto5CZ7odE";
-
-const supabase =
-createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let user = null;
-
 const ADMIN_EMAIL = "admin@iot.com";
 
-/* ========= UI ========= */
-
+/* UI */
 function mostrarLogin(){
-
-    document.getElementById("loginBox")
-    .style.display = "block";
-
-    document.getElementById("contenidoApp")
-    .classList.add("hidden");
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("contenidoApp").classList.add("hidden");
 }
 
 function mostrarApp(){
-
-    document.getElementById("loginBox")
-    .style.display = "none";
-
-    document.getElementById("contenidoApp")
-    .classList.remove("hidden");
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("contenidoApp").classList.remove("hidden");
 }
 
-/* ========= INIT ========= */
-
+/* INIT */
 window.onload = async () => {
-
-    const { data } =
-    await supabase.auth.getUser();
-
+    const { data } = await supabase.auth.getUser();
     if(data.user){
-
         user = data.user;
-
         mostrarApp();
-
         cargarImagenes();
-
-    }else{
-
+    } else {
         mostrarLogin();
     }
 };
 
-/* ========= LOGIN ========= */
-
+/* LOGIN */
 window.login = async function(){
-
-    const email =
-    document.getElementById("email").value;
-
-    const password =
-    document.getElementById("password").value;
-
-    const { data, error } =
-    await supabase.auth.signInWithPassword({
-
-        email,
-        password
-
-    });
-
-    if(error){
-
-        alert("Error login");
-
-        console.error(error);
-
-        return;
-    }
-
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if(error){ alert("Error login"); return; }
     user = data.user;
-
     mostrarApp();
-
     cargarImagenes();
 };
 
-/* ========= INVITADO ========= */
-
+/* GUEST */
 window.guestMode = function(){
-
-    user = {
-        email:"guest"
-    };
-
+    user = { email:"guest" };
     mostrarApp();
-
     cargarImagenes();
 };
 
-/* ========= LOGOUT ========= */
-
+/* LOGOUT */
 window.logout = async function(){
-
     await supabase.auth.signOut();
-
     user = null;
-
     mostrarLogin();
-
-    document.getElementById("galeria")
-    .innerHTML = "";
+    document.getElementById("galeria").innerHTML = "";
 };
 
-/* ========= GALERIA ========= */
-
+/* GALERIA */
 async function cargarImagenes(){
-
-    const { data, error } =
-    await supabase
+    const { data, error } = await supabase
         .from("Imagenes")
         .select("*")
         .order("fecha", { ascending:false });
 
-    if(error){
+    if(error){ console.error(error); alert("Error cargando imágenes"); return; }
 
-        console.error(error);
-
-        alert("Error cargando imágenes");
-
-        return;
-    }
-
-    const galeria =
-    document.getElementById("galeria");
-
+    const galeria = document.getElementById("galeria");
     galeria.innerHTML = "";
 
     if(data.length === 0){
-
-        galeria.innerHTML =
-        "<p>No hay imágenes</p>";
-
+        galeria.innerHTML = "<p>No hay imágenes</p>";
         return;
     }
 
     data.forEach(item => {
-
-        const card =
-        document.createElement("div");
-
+        const card = document.createElement("div");
         card.className = "card";
 
-        const img =
-        document.createElement("img");
-
+        // Imagen
+        const img = document.createElement("img");
         img.src = item.url;
+        img.onclick = () => { window.open(item.url, "_blank"); };
+        
+        // Datos de IA (NUEVO)
+        const pred = document.createElement("p");
+        pred.innerHTML = `<b>Diagnóstico:</b> ${item.prediccion || 'N/A'}`;
+        
+        const conf = document.createElement("p");
+        conf.innerHTML = `<b>Confianza:</b> ${item.confianza || '0%'}`;
 
-        img.onclick = () => {
+        // Fecha
+        const fecha = document.createElement("p");
+        fecha.innerText = "📅 " + item.fecha.replace("T"," ");
 
-            window.open(item.url, "_blank");
-        };
+        // GPS
+        const gps = document.createElement("p");
+        gps.innerText = `📍 ${item.lat}, ${item.lon}`;
 
-        const fecha =
-        document.createElement("p");
-
-        const fechaLimpia =
-        item.fecha.replace("T"," ");
-
-        fecha.innerText =
-        "📅 " + fechaLimpia;
-
-        const gps =
-        document.createElement("p");
-
-        gps.innerText =
-        `📍 ${item.lat}, ${item.lon}`;
-
-        const mapa =
-        document.createElement("a");
-
-        mapa.href =
-        `https://www.google.com/maps?q=${item.lat},${item.lon}`;
-
+        const mapa = document.createElement("a");
+        mapa.href = `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lon}`;
         mapa.target = "_blank";
-
         mapa.innerText = "Ver mapa";
 
         card.appendChild(img);
+        card.appendChild(pred); // Añadido
+        card.appendChild(conf); // Añadido
         card.appendChild(fecha);
         card.appendChild(gps);
         card.appendChild(mapa);
 
-        /* ===== SOLO ADMIN ===== */
-
+        /* SOLO ADMIN: BORRADO */
         if(user?.email === ADMIN_EMAIL){
-
-            const btn =
-            document.createElement("button");
-
+            const btn = document.createElement("button");
             btn.className = "deleteBtn";
-
             btn.innerText = "Eliminar";
-
             btn.onclick = async () => {
-
-                const confirmar =
-                confirm("¿Eliminar imagen?");
-
+                const confirmar = confirm("¿Eliminar registro clínico?");
                 if(!confirmar) return;
-
                 try{
-
-                    const response =
-                    await fetch("/api/delete", {
-
+                    const response = await fetch("/api/delete", {
                         method:"POST",
-
-                        headers:{
-                            "Content-Type":
-                            "application/json"
-                        },
-
-                        body:JSON.stringify({
-                            filename:item.filename
-                        })
+                        headers:{"Content-Type":"application/json"},
+                        body:JSON.stringify({ filename:item.filename })
                     });
-
-                    const result =
                     await response.json();
-
-                    console.log(result);
-
                     cargarImagenes();
-
-                }catch(err){
-
+                } catch(err){
                     console.error(err);
-
                     alert("Error eliminando");
                 }
             };
-
             card.appendChild(btn);
         }
-
         galeria.appendChild(card);
     });
 }
-
 </script>
 
 </body>
