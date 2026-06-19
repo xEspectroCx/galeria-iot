@@ -367,7 +367,19 @@ async function cargarImagenes(){
 /* MAPA INTERACTIVO */
 window.mostrarMapa = async function(){
 
-    document.getElementById("mapContainer").style.display = "block";
+    const contenedor = document.getElementById("mapContainer");
+    const boton = document.getElementById("mapBtn");
+
+    // Si ya está abierto, cerrarlo
+    if(contenedor.style.display === "block"){
+        contenedor.style.display = "none";
+        boton.innerHTML = "🗺️ Ver Mapa General";
+        return;
+    }
+
+    // Si está cerrado, abrirlo
+    contenedor.style.display = "block";
+    boton.innerHTML = "❌ Cerrar Mapa";
 
     const { data, error } = await supabase
         .from("Imagenes")
