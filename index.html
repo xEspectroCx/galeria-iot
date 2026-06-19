@@ -153,6 +153,11 @@ button {
     cursor: pointer;
 }
 
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 p { margin: 8px 0; font-size: 14px; }
 a { color: #007bff; text-decoration: none; font-weight: bold; }
 .hidden { display: none !important; }
@@ -196,7 +201,27 @@ a { color: #007bff; text-decoration: none; font-weight: bold; }
             <p>4. La IA procesará la imagen y el sistema sincronizará los resultados a la nube cuando haya conexión disponible.</p>
         </div>
     </div>
+    <button id="mapBtn"
+        onclick="mostrarMapa()"
+        style="background:#28a745;color:white;">
+        🗺️ Ver Mapa General
+    </button>
 
+    <div id="mapContainer"
+        style="
+        width:90%;
+        height:600px;
+        display:none;
+        background:white;
+        border-radius:15px;
+        overflow:hidden;
+        box-shadow:0 4px 10px rgba(0,0,0,0.1);
+        ">
+        
+            <div id="map"
+            style="width:100%;height:100%;"></div>
+    
+    </div>
     <div id="galeria"></div>
 
     <button id="logoutBtn" onclick="logout()">Cerrar sesión</button>
@@ -213,6 +238,9 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 let user = null;
 const ADMIN_EMAIL = "admin@iot.com";
 
+let mapaGeneral = null;
+let marcadores = [];
+    
 /* UI */
 function mostrarLogin(){
     document.getElementById("loginBox").style.display = "block";
@@ -303,17 +331,11 @@ async function cargarImagenes(){
         const gps = document.createElement("p");
         gps.innerText = `📍 ${item.lat}, ${item.lon}`;
 
-        const mapa = document.createElement("a");
-        mapa.href = `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lon}`;
-        mapa.target = "_blank";
-        mapa.innerText = "Ver mapa";
-
         card.appendChild(img);
         card.appendChild(pred); // Añadido
         card.appendChild(conf); // Añadido
         card.appendChild(fecha);
         card.appendChild(gps);
-        card.appendChild(mapa);
 
         /* SOLO ADMIN: BORRADO */
         if(user?.email === ADMIN_EMAIL){
@@ -340,6 +362,87 @@ async function cargarImagenes(){
         }
         galeria.appendChild(card);
     });
+}
+
+/* MAPA INTERACTIVO */
+window.mostrarMapa = async function(){
+
+    document.getElementById("mapContainer").style.display = "block";
+
+    const { data, error } = await supabase
+        .from("Imagenes")
+        .select("*");
+
+    if(error){
+        console.error(error);
+        alert("Error cargando coordenadas");
+        return;
+    }
+
+    if(!mapaGeneral){
+
+        mapaGeneral = L.map('map').setView(
+            [7.8939, -72.5078],
+            12
+        );
+
+        L.tileLayer(
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {
+                attribution: '&copy; OpenStreetMap'
+            }
+        ).addTo(mapaGeneral);
+
+    }
+
+    marcadores.forEach(m => {
+        mapaGeneral.removeLayer(m);
+    });
+
+    marcadores = [];
+
+    const bounds = [];
+
+    data.forEach(item => {
+
+        if(!item.lat || !item.lon) return;
+
+        const marker = L.marker([
+            parseFloat(item.lat),
+            parseFloat(item.lon)
+        ]).addTo(mapaGeneral);
+
+        marker.bindPopup(`
+            <div style="text-align:center;">
+                <img
+                    src="${item.url}"
+                    width="180"
+                    style="border-radius:8px;"
+                >
+                <br><br>
+                <b>${item.prediccion || "N/A"}</b>
+                <br>
+                Confianza: ${item.confianza || "0%"}
+                <br>
+                ${item.fecha}
+            </div>
+        `);
+
+        marcadores.push(marker);
+
+        bounds.push([
+            parseFloat(item.lat),
+            parseFloat(item.lon)
+        ]);
+    });
+
+    if(bounds.length > 0){
+        mapaGeneral.fitBounds(bounds);
+    }
+
+    setTimeout(() => {
+        mapaGeneral.invalidateSize();
+    }, 100);
 }
 </script>
 
