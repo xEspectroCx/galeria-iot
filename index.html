@@ -353,6 +353,10 @@ async function cargarImagenes(){
                     });
                     await response.json();
                     cargarImagenes();
+                    if(document.getElementById("mapContainer").style.display === "block"){
+                        mostrarMapa();
+                        mostrarMapa();
+                    }
                 } catch(err){
                     console.error(err);
                     alert("Error eliminando");
