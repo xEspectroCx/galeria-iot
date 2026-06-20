@@ -414,38 +414,59 @@ window.mostrarMapa = async function(){
     marcadores = [];
 
     const bounds = [];
+    const grupos = {};
 
     data.forEach(item => {
-
+    
         if(!item.lat || !item.lon) return;
+    
+        const key = `${item.lat},${item.lon}`;
+    
+        if(!grupos[key]){
+            grupos[key] = [];
+        }
+    
+        grupos[key].push(item);
+    });
+    Object.entries(grupos).forEach(([coord, registros]) => {
 
+        const [lat, lon] = coord.split(",");
+    
         const marker = L.marker([
-            parseFloat(item.lat),
-            parseFloat(item.lon)
+            parseFloat(lat),
+            parseFloat(lon)
         ]).addTo(mapaGeneral);
-
+    
+        const ultimo = registros[registros.length - 1];
+    
         marker.bindPopup(`
             <div style="text-align:center;">
+                <b>📍 Punto de Captura</b><br><br>
+    
+                Registros almacenados:
+                <b>${registros.length}</b><br><br>
+    
+                Última captura:<br>
+                ${ultimo.fecha}<br><br>
+    
+                Diagnóstico reciente:<br>
+                <b>${ultimo.prediccion}</b><br><br>
+    
                 <img
-                    src="${item.url}"
+                    src="${ultimo.url}"
                     width="180"
                     style="border-radius:8px;"
                 >
-                <br><br>
-                <b>${item.prediccion || "N/A"}</b>
-                <br>
-                Confianza: ${item.confianza || "0%"}
-                <br>
-                ${item.fecha}
             </div>
         `);
-
+    
         marcadores.push(marker);
-
+    
         bounds.push([
-            parseFloat(item.lat),
-            parseFloat(item.lon)
+            parseFloat(lat),
+            parseFloat(lon)
         ]);
+    
     });
 
     if(bounds.length > 0){
