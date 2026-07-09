@@ -316,7 +316,7 @@ async function cargarImagenes(){
         img.src = item.url;
         img.onclick = () => { window.open(item.url, "_blank"); };
         
-        // Datos de IA (NUEVO)
+        // Datos de IA
         const pred = document.createElement("p");
         pred.innerHTML = `<b>Diagnóstico:</b> ${item.prediccion || 'N/A'}`;
         
@@ -332,8 +332,8 @@ async function cargarImagenes(){
         gps.innerText = `📍 ${item.lat}, ${item.lon}`;
 
         card.appendChild(img);
-        card.appendChild(pred); // Añadido
-        card.appendChild(conf); // Añadido
+        card.appendChild(pred);
+        card.appendChild(conf);
         card.appendChild(fecha);
         card.appendChild(gps);
 
@@ -374,14 +374,12 @@ window.mostrarMapa = async function(){
     const contenedor = document.getElementById("mapContainer");
     const boton = document.getElementById("mapBtn");
 
-    // Si ya está abierto, cerrarlo
     if(contenedor.style.display === "block"){
         contenedor.style.display = "none";
         boton.innerHTML = "🗺️ Ver Mapa General";
         return;
     }
 
-    // Si está cerrado, abrirlo
     contenedor.style.display = "block";
     boton.innerHTML = "❌ Cerrar Mapa";
 
